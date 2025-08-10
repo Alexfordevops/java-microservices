@@ -1,6 +1,9 @@
 package boxsystem.auth_service.service;
 
 //import boxsystem.auth_service.dto.*;
+import boxsystem.auth_service.ExceptionHandler.AuthExceptions.PasswordNotMatchException;
+import boxsystem.auth_service.ExceptionHandler.AuthExceptions.UserNotFoundException;
+import boxsystem.auth_service.ExceptionHandler.AuthExceptions.UsernameAlreadyExistsException;
 import boxsystem.auth_service.dto.request.LoginDTO;
 import boxsystem.auth_service.dto.request.RegisterDTO;
 import boxsystem.auth_service.dto.response.AuthResponseDTO;
@@ -33,7 +36,7 @@ public class AuthService {
 
         //Verifica se o username já existe
         if(userRepository.findByUsername(data.username).isPresent()){
-            throw new RuntimeException("Username já existe");
+            throw new UsernameAlreadyExistsException("Username já existe");
         }
 
         //Cria novo usuário com a senha criptografada
@@ -65,7 +68,7 @@ public class AuthService {
 
         //Se retornar vazio, lança uma exceção
         if (userOpt.isEmpty()){
-            throw new RuntimeException("Usuário não encontrado");
+            throw new UserNotFoundException("Usuário não encontrado");
         }
 
         //Obtém os dados do objeto User
@@ -74,7 +77,7 @@ public class AuthService {
         //Verifica se as senhas conferem
         //Se não conferir
         if (!passwordEncoder.matches(data.password, user.getPassword())){
-            throw new RuntimeException("Senha não confere");
+            throw new PasswordNotMatchException("Senha não confere");
         }
 
         //Se conferir
