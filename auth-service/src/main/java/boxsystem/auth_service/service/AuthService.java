@@ -4,6 +4,7 @@ package boxsystem.auth_service.service;
 import boxsystem.auth_service.dto.request.LoginDTO;
 import boxsystem.auth_service.dto.request.RegisterDTO;
 import boxsystem.auth_service.dto.response.AuthResponseDTO;
+import boxsystem.auth_service.dto.response.RegisterResponseDTO;
 import boxsystem.auth_service.model.UserModel;
 import boxsystem.auth_service.repository.UserRepository;
 import boxsystem.auth_service.util.JwtUtil;
@@ -28,7 +29,7 @@ public class AuthService {
     private JwtUtil jwtUtil;
 
     //Registrar usuário
-    public void register(RegisterDTO data){
+    public RegisterResponseDTO register(RegisterDTO data){
 
         //Verifica se o username já existe
         if(userRepository.findByUsername(data.username).isPresent()){
@@ -44,7 +45,16 @@ public class AuthService {
         user.setName(data.name);
 
         //Salva no banco de dados
-        userRepository.save(user);
+        UserModel savedUser = userRepository.save(user);
+
+        //Retorna DTO construido com os dados do usuario salvo
+        return new RegisterResponseDTO(
+                savedUser.getId(), //Gerado pelo sistema
+                savedUser.getUsername(), //Gerado pelo usuário
+                savedUser.getName(), //Gerado pelo usuário
+                savedUser.getRole(), //Gerado pelo sistema
+                savedUser.getCreationDate() //Gerado pelo sistema
+        );
     }
 
     //Login do usuário

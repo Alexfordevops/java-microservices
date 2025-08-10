@@ -32,7 +32,7 @@ public class UserModel {
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime creationDate;
 
-    //Callback para setar a data de criação automaticamente ===
+    //Callback para setar a data de criação automaticamente
     @PrePersist
     protected void onCreate() {
         this.creationDate = LocalDateTime.now();
@@ -65,5 +65,8 @@ public class UserModel {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 }

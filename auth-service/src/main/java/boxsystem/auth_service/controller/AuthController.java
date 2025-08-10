@@ -4,8 +4,11 @@ package boxsystem.auth_service.controller;
 import boxsystem.auth_service.dto.request.LoginDTO;
 import boxsystem.auth_service.dto.request.RegisterDTO;
 import boxsystem.auth_service.dto.response.AuthResponseDTO;
+import boxsystem.auth_service.dto.response.RegisterResponseDTO;
 import boxsystem.auth_service.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,8 +20,9 @@ public class AuthController {
 
     //Registro
     @PostMapping("register")
-    public void register(@RequestBody RegisterDTO data){
-        authService.register(data); //Registra novo usuário com o metodo da classe AuthService
+    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterDTO data){
+        RegisterResponseDTO createdUser = authService.register(data); //Registra novo usuário com o metodo da classe AuthService
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser); //Resposta do servidor com httpstatus e corpo de resposta
     }
 
     //Login (retorna o AuthResponseDTO por meio do service)
