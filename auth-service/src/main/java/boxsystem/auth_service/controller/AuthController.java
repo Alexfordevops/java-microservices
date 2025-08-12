@@ -27,7 +27,8 @@ public class AuthController {
 
     //Login (retorna o AuthResponseDTO por meio do service)
     @PostMapping("login")
-    public AuthResponseDTO login(@Valid @RequestBody LoginDTO data){
-        return authService.login(data); //retorna JWT
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginDTO data){
+        AuthResponseDTO tokenJwt = authService.login(data);
+        return ResponseEntity.status(HttpStatus.OK).body(tokenJwt);
     }
 }
