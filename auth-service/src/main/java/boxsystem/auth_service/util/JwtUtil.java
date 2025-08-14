@@ -1,45 +1,25 @@
 package boxsystem.auth_service.util;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-    //Chava de segurança JWT: Atualizar para variável de ambiente
+
     @Value("${jwt.secret}")
-    private String secretKey;
+    private String secret; // Chave secreta usada para assinar o token
 
-    @Value("${jwt.expiration}")
-    private long jwtExpirationMs;
-
-    //Gera token JWT com tempo de expiração
-    public String generateToken(String username) {
+    // Gera token JWT com o username
+    public String generateToken(String username){
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .setSubject(username) // Define o "sub" do JWT como o username
+                .setIssuedAt(new Date()) // Data de emissão
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // Expira em 1 hora
+                .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8))) // Assinatura HMAC
                 .compact();
-    }
-
-    // Extrai o username do token
-    public String extractUsername(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    // Verifica se o token está válido
-    public boolean isTokenValid(String token) {
-        try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 }

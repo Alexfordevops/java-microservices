@@ -12,23 +12,27 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/auth") //Todas as rotas aqui começaram com /auth
+@RequestMapping("/auth") // Todas as rotas aqui começam com /auth
 public class AuthController {
 
     @Autowired
-    private AuthService authService;
+    private AuthService authService; // Injeção do serviço de autenticação
 
-    //Registro
+    // Registro de usuário
     @PostMapping("register")
     public ResponseEntity<RegisterResponseDTO> register(@Valid @RequestBody RegisterDTO data){
-        RegisterResponseDTO createdUser = authService.register(data); //Registra novo usuário com o metodo da classe AuthService
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser); //Resposta do servidor com httpstatus e corpo de resposta
+        // Chama o metodo register do service, que salva o usuário no banco
+        RegisterResponseDTO createdUser = authService.register(data);
+        // Retorna status 201 CREATED com os dados do usuário criado
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    //Login (retorna o AuthResponseDTO por meio do service)
+    // Login do usuário (retorna JWT)
     @PostMapping("login")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginDTO data){
+        // Chama o metodo login do service, que valida usuário e gera token JWT
         AuthResponseDTO tokenJwt = authService.login(data);
+        // Retorna status 200 OK com o token JWT no corpo
         return ResponseEntity.status(HttpStatus.OK).body(tokenJwt);
     }
 }
