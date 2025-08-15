@@ -1,7 +1,7 @@
 version: '3.8'
 
 networks:
-  boxsystem-net:  # cria uma rede chamada boxsystem-net
+  boxsystem-net:
     driver: bridge
 
 services:
@@ -17,19 +17,19 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - boxsystem-net  # adiciona à rede customizada
+      - boxsystem-net
 
-  gateway:
-    build: ./gateway
-    container_name: gateway
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
     ports:
-      - "8080:8080"
+      - "5672:5672"      # AMQP
+      - "15672:15672"    # Management UI
     environment:
-      JWT_SECRET: minhachavesupersecretaasuperseguraa1234567890abcdefghijklmn
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
     networks:
-      - boxsystem-net  # adiciona à rede customizada
-    depends_on:
-      - auth-service  # opcional, garante que o Auth-service suba antes
+      - boxsystem-net
 
   auth-service:
     build: ./auth-service
@@ -41,10 +41,28 @@ services:
       DATABASE_USER: auth_user
       DATABASE_PASSWORD: auth_pass
       JWT_SECRET: minhachavesupersecretaasuperseguraa1234567890abcdefghijklmn
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: admin
+      RABBITMQ_EXCHANGE: user.events.v1
     networks:
-      - boxsystem-net  # adiciona à rede customizada
+      - boxsystem-net
     depends_on:
       - postgres
+      - rabbitmq
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    environment:
+      JWT_SECRET: minhachavesupersecretaasuperseguraa1234567890abcdefghijklmn
+    networks:
+      - boxsystem-net
+    depends_on:
+      - auth-service
 
 volumes:
   postgres_data:

@@ -5,6 +5,7 @@ import boxsystem.auth_service.ExceptionHandler.AuthExceptions.UserNotFoundExcept
 import boxsystem.auth_service.ExceptionHandler.AuthExceptions.UsernameAlreadyExistsException;
 import boxsystem.auth_service.dto.request.LoginDTO;
 import boxsystem.auth_service.dto.request.RegisterDTO;
+import boxsystem.auth_service.dto.request.UpdateUserDTO;
 import boxsystem.auth_service.dto.response.AuthResponseDTO;
 import boxsystem.auth_service.dto.response.RegisterResponseDTO;
 import boxsystem.auth_service.model.UserModel;
@@ -24,6 +25,9 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil; // Classe utilitária para gerar token JWT
 
+    @Autowired
+    private UserService userService;
+
     // Registrar usuário
     public RegisterResponseDTO register(RegisterDTO data){
 
@@ -38,17 +42,9 @@ public class AuthService {
         user.setPassword(BCrypt.hashpw(data.password, BCrypt.gensalt())); // Criptografia da senha
         user.setName(data.name);
 
-        // Salva o usuário no banco de dados
-        UserModel savedUser = userRepository.save(user);
+        // Chama o UserService
+        return userService.register(user);
 
-        // Retorna um DTO com os dados do usuário salvo
-        return new RegisterResponseDTO(
-                savedUser.getId(),           // ID gerado pelo sistema
-                savedUser.getUsername(),     // Username do usuário
-                savedUser.getName(),         // Nome do usuário
-                savedUser.getRole(),         // Role padrão do usuário
-                savedUser.getCreationDate()  // Data de criação
-        );
     }
 
     // Login do usuário
@@ -74,5 +70,35 @@ public class AuthService {
 
         // Retorna DTO com o token
         return new AuthResponseDTO(token);
+    }
+
+    //Update de usuario
+    public RegisterResponseDTO update(Long id, UpdateUserDTO dto){
+
+        // Busca usuário pelo username
+        Optional<UserModel> userOpt = userRepository.findById(id);
+
+        // Se não encontrar, lança exceção
+        if (userOpt.isEmpty()){
+            throw new UserNotFoundException("Usuário não encontrado");
+        }
+
+        //Chama o UserService
+        return userService.update(id, dto);
+    }
+
+    //Deleta usuario
+    public RegisterResponseDTO delete(Long id){
+
+        // Busca usuário pelo username
+        Optional<UserModel> userOpt = userRepository.findById(id);
+
+        // Se não encontrar, lança exceção
+        if (userOpt.isEmpty()){
+            throw new UserNotFoundException("Usuário não encontrado");
+        }
+
+        //Chama o UserService
+        return userService.delete(id);
     }
 }
