@@ -1,6 +1,7 @@
-package boxsystem.auth_service.config;
+package boxsystem.user_service.rabbitmq;
 
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -9,29 +10,46 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableRabbit
 public class RabbitConfig {
 
     @Value("${rabbitmq.user.exchange}")
     private String userExchangeName;
 
-    // Exchange para eventos de usuário
+    @Value("${rabbitmq.user.queue}")
+    private String userQueueName;
+
+    @Value("${rabbitmq.user.routing-key}")
+    private String routingKey;
+
     @Bean
     public TopicExchange userExchange() {
         return new TopicExchange(userExchangeName);
     }
 
-    // Conversor de mensagens para JSON
     @Bean
-    public Jackson2JsonMessageConverter messageConverter() {
+    public Queue userQueue() {
+        return new Queue(userQueueName, true);
+    }
+
+    @Bean
+    public Binding binding(Queue userQueue, TopicExchange userExchange) {
+        return BindingBuilder
+                .bind(userQueue)
+                .to(userExchange)
+                .with(routingKey);
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter jacksonConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
-    // Configura RabbitTemplate com JSON
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
-                                         Jackson2JsonMessageConverter converter) {
+                                         Jackson2JsonMessageConverter jacksonConverter) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setMessageConverter(converter);
+        template.setMessageConverter(jacksonConverter);
         return template;
     }
 }

@@ -8,37 +8,36 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ServerWebExchange;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.core.annotation.Order;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 
 @Component
+@Order(-1) // garante que roda antes do roteamento
 public class JwtAuthenticationFilter implements GlobalFilter {
 
     @Value("${jwt.secret}")
-    private String secret; // Chave secreta usada para validar JWT
+    private String secret;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
+        System.out.println("[JWT] Executando filtro para rota: " + path);
 
-        // DEBUG: logs para ajudar a entender o fluxo
-        System.out.println("Raw path: " + path);
-        System.out.println("Authorization header: " +
-                exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
-
-        // Rotas públicas: não precisam de token
+        // Rotas públicas
         if (path.startsWith("/auth") || path.startsWith("/actuator")) {
+            System.out.println("[JWT] Rota pública, liberado.");
             return chain.filter(exchange);
         }
 
-        // Pega o header Authorization
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("[JWT] Header Authorization ausente ou inválido.");
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
@@ -46,29 +45,28 @@ public class JwtAuthenticationFilter implements GlobalFilter {
         String token = authHeader.substring(7);
 
         try {
-            // Valida token JWT
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
 
-            // Injeta informações do usuário nos headers para microsserviços
+            System.out.println("[JWT] Token válido para usuário: " + claims.getSubject());
+
+            // Adiciona informações para o user-service
             exchange = exchange.mutate()
                     .request(r -> r.headers(h -> {
-                        h.add("X-User-Id", claims.getSubject());
-                        if (claims.get("role") != null) {
-                            h.add("X-User-Role", claims.get("role").toString());
-                        }
+                        h.set(HttpHeaders.AUTHORIZATION, authHeader); // mantém token
+                        h.add("X-User-Id", claims.getSubject());      // opcional: passar usuário
                     }))
                     .build();
 
+            return chain.filter(exchange);
+
         } catch (JwtException e) {
+            System.out.println("[JWT] Token inválido: " + e.getMessage());
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
-
-        // Token válido → segue para microsserviço
-        return chain.filter(exchange);
     }
 }

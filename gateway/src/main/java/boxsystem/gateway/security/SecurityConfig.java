@@ -10,14 +10,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        http
+        return http
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/auth/**", "/actuator/**").permitAll() // rotas públicas
-                        .anyExchange().authenticated() // demais rotas precisam de autenticação
+                        .anyExchange().permitAll()
                 )
-                .csrf(ServerHttpSecurity.CsrfSpec::disable); // desabilita CSRF de forma não-deprecated
-
-        return http.build();
+                .build();
     }
 }
 

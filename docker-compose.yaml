@@ -5,6 +5,7 @@ networks:
     driver: bridge
 
 services:
+  # Serviço PostgreSQL para o Auth Service
   postgres:
     image: postgres:16
     container_name: auth-db-postgres
@@ -13,9 +14,24 @@ services:
       POSTGRES_USER: auth_user
       POSTGRES_PASSWORD: auth_pass
     ports:
-      - "5432:5432"
+      - "5432:5432"  # host:container
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - boxsystem-net
+
+  # Serviço PostgreSQL para o User Service
+  user-postgres:
+    image: postgres:16
+    container_name: user-db-postgres
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: user_user
+      POSTGRES_PASSWORD: user_pass
+    ports:
+      - "5433:5432"  # host:container (dentro do Docker continua 5432)
+    volumes:
+      - user_postgres_data:/var/lib/postgresql/data
     networks:
       - boxsystem-net
 
@@ -23,8 +39,8 @@ services:
     image: rabbitmq:3.13-management
     container_name: rabbitmq
     ports:
-      - "5672:5672"      # AMQP
-      - "15672:15672"    # Management UI
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
@@ -45,11 +61,33 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: admin
       RABBITMQ_PASS: admin
-      RABBITMQ_EXCHANGE: user.events.v1
+      RABBITMQ_EXCHANGE: user.exchange
     networks:
       - boxsystem-net
     depends_on:
       - postgres
+      - rabbitmq
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "8082:8080"
+    environment:
+      DATABASE_URL: jdbc:postgresql://user-postgres:5432/user_db  # porta correta
+      DATABASE_USER: user_user
+      DATABASE_PASSWORD: user_pass
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: admin
+      RABBITMQ_EXCHANGE: user.exchange
+      RABBITMQ_QUEUE: user.queue
+      RABBITMQ_ROUTING_KEY: user.*
+    networks:
+      - boxsystem-net
+    depends_on:
+      - user-postgres
       - rabbitmq
 
   gateway:
@@ -66,3 +104,4 @@ services:
 
 volumes:
   postgres_data:
+  user_postgres_data:
