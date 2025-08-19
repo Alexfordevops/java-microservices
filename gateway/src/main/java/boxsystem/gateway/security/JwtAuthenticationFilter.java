@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter implements GlobalFilter {
             exchange = exchange.mutate()
                     .request(r -> r.headers(h -> {
                         h.set(HttpHeaders.AUTHORIZATION, authHeader); // mantém token
-                        h.add("X-User-Id", claims.getSubject());      // opcional: passar usuário
+                        h.add("X-User-Id", claims.getSubject()); // opcional: passar usuário
                     }))
                     .build();
 

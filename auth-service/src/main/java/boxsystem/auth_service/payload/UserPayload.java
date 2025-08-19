@@ -9,11 +9,12 @@ public class UserPayload {
     private String name;
     private LocalDateTime creationDate;
 
-    public UserPayload(Long id, String username, String name, String role) {
+    public UserPayload(Long id, String username, String name, String role, LocalDateTime creationDate) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.role = role;
+        this.creationDate = creationDate;
     }
 
     public Long getId() {

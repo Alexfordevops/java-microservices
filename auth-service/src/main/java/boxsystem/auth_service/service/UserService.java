@@ -33,7 +33,8 @@ public class UserService {
                 savedUser.getId(),
                 savedUser.getUsername(),
                 savedUser.getName(),
-                savedUser.getRole()
+                savedUser.getRole(),
+                savedUser.getCreationDate()
         );
 
         //Retorna o DTO para o AuthService
@@ -66,7 +67,8 @@ public class UserService {
                 savedUser.getId(),
                 savedUser.getUsername(),
                 savedUser.getName(),
-                savedUser.getRole()
+                savedUser.getRole(),
+                savedUser.getCreationDate()
         );
 
         //Retorna o DTO

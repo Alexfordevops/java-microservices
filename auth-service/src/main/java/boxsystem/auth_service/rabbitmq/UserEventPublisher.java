@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Component
@@ -21,21 +22,21 @@ public class UserEventPublisher {
         this.exchange = userExchange;
     }
 
-    public void publishUserCreated(Long id, String username, String name, String role) {
+    public void publishUserCreated(Long id, String username, String name, String role, LocalDateTime creationDate) {
         UserEvent event = new UserEvent(UUID.randomUUID().toString(),
                 "user.created",
                 "1",
                 Instant.now(),
-                new UserPayload(id, username, name, role));
+                new UserPayload(id, username, name, role, creationDate));
         send(event);
     }
 
-    public void publishUserUpdated(Long id, String username, String name, String role) {
+    public void publishUserUpdated(Long id, String username, String name, String role, LocalDateTime creationDate) {
         UserEvent event = new UserEvent(UUID.randomUUID().toString(),
                 "user.updated",
                 "1",
                 Instant.now(),
-                new UserPayload(id, username, name, role));
+                new UserPayload(id, username, name, role, creationDate));
         send(event);
     }
 
@@ -44,7 +45,7 @@ public class UserEventPublisher {
                 "user.deleted",
                 "1",
                 Instant.now(),
-                new UserPayload(id, null, null, null));
+                new UserPayload(id, null, null, null, null));
         send(event);
     }
 
