@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDBReadModelRepository extends JpaRepository<UserDBReadModel, Long> {
 
@@ -12,7 +13,7 @@ public interface UserDBReadModelRepository extends JpaRepository<UserDBReadModel
     List<UserDBReadModel> findByNameIgnoreCase(String name);
 
     //Busca usuario por username
-    UserDBReadModel findByUsernameIgnoreCase(String name);
+    Optional<UserDBReadModel> findByUsernameIgnoreCase(String name);
 
     //Busca usuario por data de criaçao (adaptar formato na entrada)
     List<UserDBReadModel> findByCreationDate(LocalDateTime creationDate);

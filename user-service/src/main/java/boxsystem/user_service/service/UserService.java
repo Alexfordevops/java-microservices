@@ -1,6 +1,7 @@
 package boxsystem.user_service.service;
 
 import boxsystem.user_service.dto.UserResponseDTO;
+import boxsystem.user_service.exceptionHandler.userExceptions.UserNotFoundException;
 import boxsystem.user_service.models.UserDBReadModel;
 import boxsystem.user_service.repository.UserDBReadModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +35,11 @@ public class UserService {
                      .collect(Collectors.toList());
     }
 
-    //Busca usuario pelo id (Criar as tratativas de exception)
+    //Busca usuario pelo id
     public UserResponseDTO getUserById(Long id){
 
         //Busca usuário pelo id
-        UserDBReadModel user = repo.findById(id).get();
+        UserDBReadModel user = repo.findById(id).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         //Constroi o DTO de resposta
         UserResponseDTO response = new UserResponseDTO(
@@ -59,6 +60,11 @@ public class UserService {
         //Busca usuário pelo name
         List<UserDBReadModel> users = repo.findByNameIgnoreCase(name);
 
+        //Se a lista for vazia (nenhum usuário encontado pelo nome)
+        if(users.isEmpty()){
+            throw new UserNotFoundException("Usuário não encontrado");
+        }
+
         //Converter Lista de usuarios para lista de DTO
         return users.stream()
                 .map(user -> new UserResponseDTO(
@@ -75,7 +81,7 @@ public class UserService {
     public UserResponseDTO getUserByUsername(String username){
 
         //Busca usuário pelo id
-        UserDBReadModel user = repo.findByUsernameIgnoreCase(username);
+        UserDBReadModel user = repo.findByUsernameIgnoreCase(username).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         //Constroi o DTO de resposta
         UserResponseDTO response = new UserResponseDTO(
@@ -95,6 +101,10 @@ public class UserService {
 
         List<UserDBReadModel> users = repo.findByCreationDate(creationDate);
 
+        if(users.isEmpty()){
+            throw new UserNotFoundException("Usuário não encontrado");
+        }
+
         //Converter Lista de usuarios para lista de DTO
         return users.stream()
                 .map(user -> new UserResponseDTO(
@@ -112,6 +122,10 @@ public class UserService {
 
         List<UserDBReadModel> users = repo.findByRoleIgnoreCase(role);
 
+        if(users.isEmpty()){
+            throw new UserNotFoundException("Usuário não encontrado");
+        }
+
         //Converter Lista de usuarios para lista de DTO
         return users.stream()
                 .map(user -> new UserResponseDTO(
@@ -127,6 +141,10 @@ public class UserService {
     public List<UserResponseDTO> getUserByNameAndRole(String name, String role){
 
         List<UserDBReadModel> users = repo.findByNameAndRoleIgnoreCase(name, role);
+
+        if(users.isEmpty()){
+            throw new UserNotFoundException("Usuário não encontrado");
+        }
 
         //Converter Lista de usuarios para lista de DTO
         return users.stream()
