@@ -14,11 +14,28 @@ services:
       POSTGRES_USER: auth_user
       POSTGRES_PASSWORD: auth_pass
     ports:
-      - "5432:5432"  # host:container
+      - "5432:5432" # host:container
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - boxsystem-net
+    restart: always # Boa prática para bancos de dados
+
+  # Serviço PostgreSQL para o Product Service
+  products-postgres:
+    image: postgres:16
+    container_name: product-db-postgres
+    environment:
+      POSTGRES_DB: product_db
+      POSTGRES_USER: product_user
+      POSTGRES_PASSWORD: product_pass
+    ports:
+      - "5434:5432" # host:container - Corrigido para evitar conflito de porta com 'postgres'
+    volumes:
+      - product_postgres_data:/var/lib/postgresql/data
+    networks:
+      - boxsystem-net
+    restart: always # Boa prática para bancos de dados
 
   # Serviço PostgreSQL para o User Service
   user-postgres:
@@ -29,11 +46,12 @@ services:
       POSTGRES_USER: user_user
       POSTGRES_PASSWORD: user_pass
     ports:
-      - "5433:5432"  # host:container (dentro do Docker continua 5432)
+      - "5433:5432" # host:container (dentro do Docker continua 5432)
     volumes:
       - user_postgres_data:/var/lib/postgresql/data
     networks:
       - boxsystem-net
+    restart: always # Boa prática para bancos de dados
 
   rabbitmq:
     image: rabbitmq:3.13-management
@@ -46,6 +64,7 @@ services:
       RABBITMQ_DEFAULT_PASS: admin
     networks:
       - boxsystem-net
+    restart: always
 
   auth-service:
     build: ./auth-service
@@ -62,19 +81,45 @@ services:
       RABBITMQ_USER: admin
       RABBITMQ_PASS: admin
       RABBITMQ_EXCHANGE: user.exchange
+      RABBITMQ_QUEUE: user.queue # Adicionado para consistência
+      RABBITMQ_ROUTING_KEY: user.* # Adicionado para consistência
     networks:
       - boxsystem-net
     depends_on:
       - postgres
       - rabbitmq
+    restart: always
 
-  user-service:
+  product-service:
+    build: ./product-service
+    container_name: product-service
+    ports:
+      - "8083:8080"
+    environment:
+      DATABASE_URL: jdbc:postgresql://products-postgres:5432/product_db # Corrigido: apontando para 'products-postgres'
+      DATABASE_USER: product_user
+      DATABASE_PASSWORD: product_pass
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: admin
+      RABBITMQ_EXCHANGE: user.exchange
+      RABBITMQ_QUEUE: user.queue.product
+      RABBITMQ_ROUTING_KEY: user.*
+    networks:
+      - boxsystem-net
+    depends_on:
+      - products-postgres # Depende do seu próprio banco de dados
+      - rabbitmq
+    restart: always
+
+  user-service: # Indentação corrigida
     build: ./user-service
     container_name: user-service
     ports:
       - "8082:8080"
     environment:
-      DATABASE_URL: jdbc:postgresql://user-postgres:5432/user_db  # porta correta
+      DATABASE_URL: jdbc:postgresql://user-postgres:5432/user_db
       DATABASE_USER: user_user
       DATABASE_PASSWORD: user_pass
       RABBITMQ_HOST: rabbitmq
@@ -82,13 +127,14 @@ services:
       RABBITMQ_USER: admin
       RABBITMQ_PASS: admin
       RABBITMQ_EXCHANGE: user.exchange
-      RABBITMQ_QUEUE: user.queue
+      RABBITMQ_QUEUE: user.queue.user
       RABBITMQ_ROUTING_KEY: user.*
     networks:
       - boxsystem-net
     depends_on:
       - user-postgres
       - rabbitmq
+    restart: always
 
   gateway:
     build: ./gateway
@@ -101,7 +147,11 @@ services:
       - boxsystem-net
     depends_on:
       - auth-service
+      - user-service # Adicionei dependência do user-service, pois é comum gateways precisarem de serviços de usuário
+      - product-service # Adicionei dependência do product-service
+    restart: always
 
 volumes:
   postgres_data:
   user_postgres_data:
+  product_postgres_data:
