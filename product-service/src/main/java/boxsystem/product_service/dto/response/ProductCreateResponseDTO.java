@@ -1,30 +1,24 @@
-package boxsystem.product_service.model;
+package boxsystem.product_service.dto.response;
 
-import jakarta.persistence.*;
+import boxsystem.product_service.model.UserReadModel;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "productTable")
-public class ProductModel {
+public class ProductCreateResponseDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String category;
     private Double price;
     private Double quantity;
-    private LocalDateTime creationDate = LocalDateTime.now();
+    private LocalDateTime creationDate;
+    private Long userId;
 
-    // Chave estrangeira -> UserReadModel
-    @ManyToOne
-    @JoinColumn(name = "user_id") // nome da coluna que será a foreign key
-    private UserReadModel user;
 
-    public ProductModel() {}
+    public ProductCreateResponseDTO(){};
 
-    public ProductModel(
+    public ProductCreateResponseDTO(
             Long id,
             LocalDateTime creationDate,
             UserReadModel user,
@@ -32,14 +26,14 @@ public class ProductModel {
             Double price,
             String category,
             Double quantity
-                        ) {
+    ){
         this.id = id;
         this.name = name;
         this.creationDate = creationDate;
         this.price = price;
-        this.category = category;
         this.quantity = quantity;
-        this.user = user;
+        this.category = category;
+        this.userId = user.getId();
     }
 
     public Long getId() {
@@ -48,17 +42,17 @@ public class ProductModel {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getCategory() {
-        return category;
-    }
-    public void setCategory(String category) {
-        this.category = category;
-    }
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public String getCategory() {
+        return category;
+    }
+    public void setCategory(String category) {
+        this.category = category;
     }
     public Double getPrice() {
         return price;
@@ -72,16 +66,22 @@ public class ProductModel {
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
-    public UserReadModel getUser() {
-        return user;
+    public Long getUser() {
+        return userId;
     }
-    public void setUser(UserReadModel user) {
-        this.user = user;
+    public void setUser(Long user) {
+        this.userId = user;
     }
     public Double getQuantity() {
         return quantity;
     }
     public void setQuantity(Double quantity) {
         this.quantity = quantity;
+    }
+    public Long getUserId() {
+        return userId;
+    }
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
