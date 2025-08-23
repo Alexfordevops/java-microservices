@@ -18,18 +18,28 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @PostMapping("/create/{username}")
-    public ResponseEntity<ProductCreateResponseDTO> createProduct(
-            @PathVariable String username,
-            @Valid @RequestBody ProductRequestDTO data
-            ){
-        ProductCreateResponseDTO response = productService.createProductHeader(data, username);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    @PostMapping("/create")
+    public ResponseEntity<ProductCreateResponseDTO> createProductXUserId(
+            @Valid @RequestBody ProductRequestDTO data,
+            @RequestHeader(value = "X-User-Id", required = false) String actualUser
+    ){
+        System.out.println("Requisição recebida para usuário: " + actualUser);
+        ProductCreateResponseDTO response = productService.createProductHeader(data, actualUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/list")
     public ResponseEntity<List<ProductCreateResponseDTO>> listAllProducts(){
         List<ProductCreateResponseDTO> response = productService.listAllProducts();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/list/me")
+    public ResponseEntity<List<ProductCreateResponseDTO>> listProductByUser(
+            @RequestHeader(value = "X-User-Id", required = false) String actualUser
+    ){
+        System.out.println("Requisição recebida para usuário: " + actualUser);
+        List<ProductCreateResponseDTO> response = productService.listProductByUser(actualUser);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

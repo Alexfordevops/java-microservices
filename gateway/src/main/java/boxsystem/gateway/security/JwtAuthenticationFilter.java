@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter implements GlobalFilter {
 
             System.out.println("[JWT] Token válido para usuário: " + claims.getSubject());
 
-            // Adiciona informações para o user-service
+            // Adiciona informações do usuario apra outros services
             exchange = exchange.mutate()
                     .request(r -> r.headers(h -> {
                         h.set(HttpHeaders.AUTHORIZATION, authHeader); // mantém token

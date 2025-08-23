@@ -78,10 +78,4 @@ public class ProductCreateResponseDTO {
     public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
-    public Long getUserId() {
-        return userId;
-    }
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 }

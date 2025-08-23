@@ -15,7 +15,12 @@ public class ProductModel {
     private String category;
     private Double price;
     private Double quantity;
-    private LocalDateTime creationDate = LocalDateTime.now();
+    private LocalDateTime creationDate;
+
+    @PrePersist
+    protected void onCreate() {
+        this.creationDate = LocalDateTime.now();
+    }
 
     // Chave estrangeira -> UserReadModel
     @ManyToOne
