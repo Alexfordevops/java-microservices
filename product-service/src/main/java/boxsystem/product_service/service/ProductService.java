@@ -30,8 +30,8 @@ public class ProductService {
         //Econtra o usuario com este username
         UserReadModel user = userRepo.findByUsername(userName).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        //Verifica se o produto ja existe (se existir soma a quantidade existente com a do DTO e salva o produto com acrescimo)
-        Optional<ProductModel> existingProductOptional = productRepo.findByName(data.name);
+        //Verifica se o produto já existe para determinado usuario
+        Optional<ProductModel> existingProductOptional = productRepo.findByNameAndUser(data.name, user);
 
         // Produto já existe, então atualiza a quantidade
         if (existingProductOptional.isPresent()) {
@@ -131,5 +131,31 @@ public class ProductService {
 
         return productDTOs;
 
+    }
+
+    @Transactional
+    //Deleta todos os produtos
+    public List<ProductCreateResponseDTO> deleteAllProducts(){
+
+        //Lista todos os produtos
+        List<ProductModel> deletedProducts = productRepo.findAll();
+
+        //Deleta todos os produtos
+        productRepo.deleteAll();
+
+        //Converte a lista
+        List<ProductCreateResponseDTO> productDTOs = deletedProducts.stream()
+                .map(product -> new ProductCreateResponseDTO(
+                        product.getId(),
+                        product.getCreationDate(),
+                        product.getUser(),
+                        product.getName(),
+                        product.getPrice(),
+                        product.getCategory(),
+                        product.getQuantity()
+                ))
+                .collect(Collectors.toList());
+
+        return productDTOs;
     }
 }

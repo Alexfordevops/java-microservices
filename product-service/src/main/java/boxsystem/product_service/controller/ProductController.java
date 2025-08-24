@@ -28,7 +28,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list/all")
     public ResponseEntity<List<ProductCreateResponseDTO>> listAllProducts(){
         List<ProductCreateResponseDTO> response = productService.listAllProducts();
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -40,6 +40,12 @@ public class ProductController {
     ){
         System.out.println("Requisição recebida para usuário: " + actualUser);
         List<ProductCreateResponseDTO> response = productService.listProductByUser(actualUser);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping("/delete/all")
+    public ResponseEntity<List<ProductCreateResponseDTO>> deleteAllProducts(){
+        List<ProductCreateResponseDTO> response = productService.deleteAllProducts();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

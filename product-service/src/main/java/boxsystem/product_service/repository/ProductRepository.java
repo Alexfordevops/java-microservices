@@ -1,6 +1,7 @@
 package boxsystem.product_service.repository;
 
 import boxsystem.product_service.model.ProductModel;
+import boxsystem.product_service.model.UserReadModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,4 +14,7 @@ public interface ProductRepository extends JpaRepository<ProductModel, Long> {
 
     //Busca produto pelo nome
     Optional<ProductModel> findByName(String name);
+
+    //Busca produto pelo nome e usuario atribuido
+    Optional<ProductModel> findByNameAndUser(String name, UserReadModel user);
 }
