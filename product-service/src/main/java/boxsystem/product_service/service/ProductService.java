@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +29,37 @@ public class ProductService {
 
         //Econtra o usuario com este username
         UserReadModel user = userRepo.findByUsername(userName).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+
+        //Verifica se o produto ja existe (se existir soma a quantidade existente com a do DTO e salva o produto com acrescimo)
+        Optional<ProductModel> existingProductOptional = productRepo.findByName(data.name);
+
+        // Produto já existe, então atualiza a quantidade
+        if (existingProductOptional.isPresent()) {
+
+            //Coleto o produto do optional
+            ProductModel existingProduct = existingProductOptional.get();
+
+            //Soma a quantitdade existente com a nova quantidade inserida
+            Double newQuantity = existingProduct.getQuantity() + data.quantity;
+
+            //Salva o produto com as modificações
+            existingProduct.setQuantity(newQuantity);
+            productRepo.save(existingProduct);
+
+            //Constroi o corpo de resposta
+            ProductCreateResponseDTO response = new ProductCreateResponseDTO(
+                    existingProduct.getId(),
+                    existingProduct.getCreationDate(),
+                    existingProduct.getUser(),
+                    existingProduct.getName(),
+                    existingProduct.getPrice(),
+                    existingProduct.getCategory(),
+                    existingProduct.getQuantity()
+            );
+
+            return response;
+
+        }
 
         //Cria um produto com os dados de ProductRequestDTO
         ProductModel product = new ProductModel();
