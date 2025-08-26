@@ -9,7 +9,7 @@ import {Observable} from 'rxjs';
 export class AuthService {
 
   //Endpoint da api auth-service/register
-  private apiUrl = 'url:port/users/register';
+  private apiUrl = 'http://192.168.56.10:8080/auth';
 
   //Constroi as classes
   constructor(
@@ -17,12 +17,12 @@ export class AuthService {
   ) {}
 
   //Metodo de registro
-  register(user: UserRegister): Observable<any>{
-    return this.http.post(this.apiUrl, user); //criar concatenação para o endpoint de registro
+  register(userForm: UserRegister): Observable<any>{
+    return this.http.post(`${this.apiUrl}/register`, userForm ); //criar concatenação para o endpoint de registro
   }
 
   //Metodo de login: criar forma de receber e armazenar token jwt
-  login(user: UserRegister): Observable<any>{
-    return this.http.post(this.apiUrl, user); //criar concatenação para o endpoint de registro
+  login(userForm: UserRegister): Observable<any>{
+    return this.http.post(`${this.apiUrl}/login`, userForm); //criar concatenação para o endpoint de registro
   }
 }

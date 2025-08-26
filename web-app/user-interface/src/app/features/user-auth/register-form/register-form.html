@@ -9,7 +9,7 @@
       <label>Username:</label>
       <input type="text" formControlName="username" />
       <small *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
-        Nome é obrigatório.
+       Mínimo 4 caracteres.
       </small>
     </div>
 
@@ -18,7 +18,7 @@
       <label>Nome:</label>
       <input type="text" formControlName="name" />
       <small *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
-        Nome é obrigatório.
+        Mínimo 2 caracteres.
       </small>
     </div>
 

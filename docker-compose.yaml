@@ -151,6 +151,17 @@ services:
       - product-service # Adicionei dependência do product-service
     restart: always
 
+  web-app:
+    build: ./web-app/user-interface
+    container_name: web-app
+    ports:
+      - "4200:80"
+    networks:
+      - boxsystem-net
+    restart: always
+    depends_on:
+      - gateway
+
 volumes:
   postgres_data:
   user_postgres_data:

@@ -25,9 +25,9 @@ export class RegisterForm {
     private authService: AuthService
   ) {
     this.registerForm = this.fb.group({
-      username:['', [Validators.required, Validators.minLength(5)]],
-      name: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(5)]]
+      username:['', [Validators.required, Validators.minLength(4)]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     })
   }
 
