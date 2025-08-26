@@ -19,7 +19,7 @@ export class LoginForm {
   successMessage = '';       // mensagem de sucesso
   errorMessage = '';         // mensagem de erro
 
-  //Constroi o formulario
+  //Constroi o formulario de login
   constructor(
     private fb: FormBuilder,
     private authService: AuthService
