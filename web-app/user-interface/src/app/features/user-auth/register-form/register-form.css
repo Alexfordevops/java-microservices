@@ -1,0 +1,132 @@
+/* Import de fonte moderna */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* Container do formulário */
+.container {
+  max-width: 420px;
+  margin: 50px auto;
+  padding: 35px 25px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  font-family: 'Poppins', sans-serif;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animação de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Título */
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Labels */
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.25s ease;
+  background: #fafafa;
+}
+
+/* Foco nos inputs */
+input:focus {
+  border-color: #007bff;
+  background: #fff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.25);
+}
+
+/* Mensagens de erro */
+small {
+  display: block;
+  font-size: 12px;
+  color: #e74c3c;
+  margin-top: -8px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+/* Botão */
+button {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+/* Hover */
+button:hover:enabled {
+  background: linear-gradient(135deg, #0056b3, #004095);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 91, 187, 0.25);
+}
+
+/* Active */
+button:active {
+  transform: scale(0.98);
+}
+
+/* Botão desabilitado */
+button:disabled {
+  background: #bfc5cc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Mensagens de feedback */
+.success {
+  color: #2ecc71;
+  font-weight: 600;
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.error {
+  color: #e74c3c;
+  font-weight: 600;
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  .container {
+    margin: 20px;
+    padding: 25px 20px;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+}
