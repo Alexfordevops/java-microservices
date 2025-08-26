@@ -1,5 +1,5 @@
 <div class="container">
-  <h2>Registro de Usuário</h2>
+  <h2>Login de Usuário</h2>
 
   <!-- Formulário ligado ao FormGroup -->
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
@@ -23,7 +23,7 @@
     </div>
 
     <!-- Botão de envio -->
-    <button type="submit" [disabled]="registerForm.invalid">Registrar</button>
+    <button type="submit" [disabled]="registerForm.invalid">Login</button>
   </form>
 
   <!-- Mensagens de feedback -->
