@@ -1,1 +1,33 @@
-<p>login-form works!</p>
+<div class="container">
+  <h2>Registro de Usuário</h2>
+
+  <!-- Formulário ligado ao FormGroup -->
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <!-- Campo Username -->
+    <div>
+      <label>Username:</label>
+      <input type="text" formControlName="username" />
+      <small *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+        Mínimo 4 caracteres.
+      </small>
+    </div>
+
+    <!-- Campo Senha -->
+    <div>
+      <label>Senha:</label>
+      <input type="password" formControlName="password" />
+      <small *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        Mínimo 6 caracteres.
+      </small>
+    </div>
+
+    <!-- Botão de envio -->
+    <button type="submit" [disabled]="registerForm.invalid">Registrar</button>
+  </form>
+
+  <!-- Mensagens de feedback -->
+  <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+</div>
+

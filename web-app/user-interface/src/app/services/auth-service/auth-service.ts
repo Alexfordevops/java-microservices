@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {UserRegister} from '../../interfaces/UserRegister';
+import {UserLogin} from '../../interfaces/UserLogin';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
@@ -22,7 +23,7 @@ export class AuthService {
   }
 
   //Metodo de login: criar forma de receber e armazenar token jwt
-  login(userForm: UserRegister): Observable<any>{
+  login(userForm: UserLogin): Observable<any>{
     return this.http.post(`${this.apiUrl}/login`, userForm); //criar concatenação para o endpoint de registro
   }
 }
