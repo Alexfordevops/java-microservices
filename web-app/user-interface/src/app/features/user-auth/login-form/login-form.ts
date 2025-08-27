@@ -15,7 +15,7 @@ import {AuthService} from '../../../services/auth-service/auth-service';
 })
 export class LoginForm {
 
-  registerForm: FormGroup;   // formulário reativo
+  loginForm: FormGroup;   // formulário reativo
   successMessage = '';       // mensagem de sucesso
   errorMessage = '';         // mensagem de erro
 
@@ -24,27 +24,26 @@ export class LoginForm {
     private fb: FormBuilder,
     private authService: AuthService
   ) {
-    this.registerForm = this.fb.group({
+    this.loginForm = this.fb.group({
       username:['', [Validators.required, Validators.minLength(4)]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     })
   }
 
-  onSubmit(){
-    if(this.registerForm.valid){
-      this.authService.login(this.registerForm.value).subscribe({
+  onSubmit() {
+    if (this.loginForm.valid) {
+      this.authService.login(this.loginForm.value).subscribe({
         next: () => {
           this.successMessage = 'Login efetuado com sucesso!';
           this.errorMessage = '';
-          this.registerForm.reset(); // limpa o formulário
+          this.loginForm.reset();
         },
         error: (err) => {
-          this.errorMessage = 'Erro ao efetuar o login!';
+          this.errorMessage = err.message; // vem do backend
           this.successMessage = '';
           console.error(err);
         }
       })
     }
   }
-
 }

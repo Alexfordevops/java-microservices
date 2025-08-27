@@ -2,13 +2,13 @@
   <h2>Login de Usuário</h2>
 
   <!-- Formulário ligado ao FormGroup -->
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
     <!-- Campo Username -->
     <div>
       <label>Username:</label>
       <input type="text" formControlName="username" />
-      <small *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+      <small *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
         Mínimo 4 caracteres.
       </small>
     </div>
@@ -17,13 +17,13 @@
     <div>
       <label>Senha:</label>
       <input type="password" formControlName="password" />
-      <small *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+      <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
         Mínimo 6 caracteres.
       </small>
     </div>
 
     <!-- Botão de envio -->
-    <button type="submit" [disabled]="registerForm.invalid">Login</button>
+    <button type="submit" [disabled]="loginForm.invalid">Login</button>
   </form>
 
   <!-- Mensagens de feedback -->

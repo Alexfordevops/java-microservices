@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import {UserRegister} from '../../interfaces/UserRegister';
 import {UserLogin} from '../../interfaces/UserLogin';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -17,13 +18,40 @@ export class AuthService {
     private http: HttpClient
   ) {}
 
-  //Metodo de registro
-  register(userForm: UserRegister): Observable<any>{
-    return this.http.post(`${this.apiUrl}/register`, userForm ); //criar concatenação para o endpoint de registro
+  // Metodo de registro
+  register(userForm: UserRegister): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userForm)
+      .pipe(
+        catchError(error => {
+          const errorMsg = error.error?.error || 'Erro ao registrar usuário';
+          return throwError(() => new Error(errorMsg));
+        })
+      );
   }
 
-  //Metodo de login: criar forma de receber e armazenar token jwt
-  login(userForm: UserLogin): Observable<any>{
-    return this.http.post(`${this.apiUrl}/login`, userForm); //criar concatenação para o endpoint de registro
+  // Metodo de login: recebe e armazena token JWT
+  login(userForm: UserLogin): Observable<any> {
+    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, userForm)
+      .pipe(
+        tap(response => {
+          if (response.token) {
+            localStorage.setItem('authToken', response.token); // salva token
+          }
+        }),
+        catchError(error => {
+          const errorMsg = error.error?.error || 'Erro ao efetuar o login';
+          return throwError(() => new Error(errorMsg));
+        })
+      );
+  }
+
+  // Recupera o token salvo
+  getToken(): string | null {
+    return localStorage.getItem('authToken');
+  }
+
+  // Remove token (logout)
+  logout(): void {
+    localStorage.removeItem('authToken');
   }
 }
