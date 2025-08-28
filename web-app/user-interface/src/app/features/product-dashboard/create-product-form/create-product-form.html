@@ -1,1 +1,52 @@
-<p>create-product-form works!</p>
+<div class="container">
+  <h2>Criar produto</h2>
+
+  <!-- Formulário ligado ao FormGroup -->
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+
+    <!-- Campo nome -->
+    <div>
+      <label>Nome do produto:</label>
+      <input type="text" formControlName="name" />
+      <small *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+        Mínimo 4 caracteres.
+      </small>
+    </div>
+
+    <!-- Campo categoria -->
+    <div>
+      <label>Categoria do produto:</label>
+      <input type="text" formControlName="category" />
+      <small *ngIf="productForm.get('category')?.invalid && productForm.get('category')?.touched">
+        Mínimo 2 caracteres.
+      </small>
+    </div>
+
+    <!-- Campo preço -->
+    <div>
+      <label>Preço do produto:</label>
+      <input type="number" formControlName="price" />
+      <small *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+        Mínimo 2 caracteres.
+      </small>
+    </div>
+
+    <!-- Campo quantidade -->
+    <div>
+      <label>Quantidade do produto:</label>
+      <input type="number" formControlName="quantity" />
+      <small *ngIf="productForm.get('quantity')?.invalid && productForm.get('quantity')?.touched">
+        Mínimo 2 caracteres.
+      </small>
+    </div>
+
+    <!-- Botão de envio -->
+    <button type="submit" [disabled]="productForm.invalid">Criar</button>
+  </form>
+
+  <!-- Mensagens de feedback -->
+  <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+</div>
+
+
