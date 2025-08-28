@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {AuthService} from '../../../services/auth-service/auth-service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login-form',
@@ -22,7 +23,8 @@ export class LoginForm {
   //Constroi o formulario de login
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
       username:['', [Validators.required, Validators.minLength(4)]],
@@ -37,6 +39,7 @@ export class LoginForm {
           this.successMessage = 'Login efetuado com sucesso!';
           this.errorMessage = '';
           this.loginForm.reset();
+          this.router.navigate(['/products']); // redireciona após login
         },
         error: (err) => {
           this.errorMessage = err.message; // vem do backend

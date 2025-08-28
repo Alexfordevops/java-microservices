@@ -11,7 +11,7 @@ import { catchError, tap } from 'rxjs/operators';
 export class AuthService {
 
   //Endpoint da api auth-service/register
-  private apiUrl = 'http://192.168.56.10:8080/auth';
+  private apiUrl: string = 'http://192.168.56.10:8080/auth';
 
   //Constroi as classes
   constructor(
@@ -53,5 +53,10 @@ export class AuthService {
   // Remove token (logout)
   logout(): void {
     localStorage.removeItem('authToken');
+  }
+
+  //Usuario logado
+  isLoggedIn():boolean{
+    return !!this.getToken(); //retorna true se houver o token
   }
 }
