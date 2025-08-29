@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -36,10 +37,25 @@ public class ProductController {
 
     @GetMapping("/list/me")
     public ResponseEntity<List<ProductCreateResponseDTO>> listProductByUser(
-            @RequestHeader(value = "X-User-Id", required = false) String actualUser
+            @RequestHeader(value = "X-User-Id", required = false) String actualUser //Extrai o username do token JWT
     ){
         System.out.println("Requisição recebida para usuário: " + actualUser);
-        List<ProductCreateResponseDTO> response = productService.listProductByUser(actualUser);
+        List<ProductCreateResponseDTO> response = productService.listProductByUser(actualUser); //Utiliza este username para realizar a query pelo service
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/list/me/filter")
+    public ResponseEntity<List<ProductCreateResponseDTO>> listProductsByUserFilter(
+            @RequestHeader(value = "X-User-Id", required = false) String actualUser, //Extrai o username do token JWT
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Double minQuantity,
+            @RequestParam(required = false) Double maxQuantity
+    ){
+        System.out.println("Requisição recebida para usuário: " + actualUser);
+        List<ProductCreateResponseDTO> response = productService.listProductByUserFilter(actualUser, name, category, minPrice, maxPrice, minQuantity, maxQuantity);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

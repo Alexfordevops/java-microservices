@@ -7,10 +7,13 @@ import boxsystem.product_service.model.ProductModel;
 import boxsystem.product_service.model.UserReadModel;
 import boxsystem.product_service.repository.ProductRepository;
 import boxsystem.product_service.repository.UserReadModelRepository;
+import boxsystem.product_service.specification.ProductSpecification;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -131,6 +134,52 @@ public class ProductService {
 
         return productDTOs;
 
+    }
+
+    public List<ProductCreateResponseDTO> listProductByUserFilter(
+            String username,
+            String name,
+            String category,
+            Double minPrice,
+            Double maxPrice,
+            Double minQuantity,
+            Double maxQuantity
+    ){
+        //Busca o usuario no repositorio pelo username
+        UserReadModel user = userRepo.findByUsername(username).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+
+        //Pega o id do usuario encontrado com o username
+        Long userId = user.getId();
+
+        //Com o id do usuario encontrado lista todos os produtos deste usuario
+        //List<ProductModel> products = productRepo.findByUser_Id(user.getId());
+
+        //Constroi a lista de especificacoes
+        Specification<ProductModel> spec = Specification.where(ProductSpecification.belongsToUser(userId))
+                .and(ProductSpecification.hasName(name))
+                .and(ProductSpecification.hasCategory(category))
+                .and(ProductSpecification.priceGreaterThanOrEqual(minPrice))
+                .and(ProductSpecification.priceLessThanOrEqual(maxPrice))
+                .and(ProductSpecification.quantityGreaterThanOrEqual(minQuantity))
+                .and(ProductSpecification.quantityLessThanOrEqual(maxQuantity));
+
+        //Busca todos os produtos com as especificacoes criadas
+        List<ProductModel> products = productRepo.findAll(spec);
+
+        //Converte a lista para DTO
+        List<ProductCreateResponseDTO> productDTOs = products.stream()
+                .map(savedProduct -> new ProductCreateResponseDTO(
+                        savedProduct.getId(),
+                        savedProduct.getCreationDate(),
+                        savedProduct.getUser(),
+                        savedProduct.getName(),
+                        savedProduct.getPrice(),
+                        savedProduct.getCategory(),
+                        savedProduct.getQuantity()
+                ))
+                .collect(Collectors.toList());
+
+        return productDTOs;
     }
 
     @Transactional

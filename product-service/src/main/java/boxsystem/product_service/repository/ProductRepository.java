@@ -3,11 +3,14 @@ package boxsystem.product_service.repository;
 import boxsystem.product_service.model.ProductModel;
 import boxsystem.product_service.model.UserReadModel;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<ProductModel, Long> {
+public interface ProductRepository extends
+        JpaRepository<ProductModel, Long>,
+        JpaSpecificationExecutor<ProductModel>
+{
 
     //Busca pela chave estrangeira com _Id
     List<ProductModel> findByUser_Id(Long id);
