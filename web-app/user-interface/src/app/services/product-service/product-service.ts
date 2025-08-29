@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {ProductCreate} from '../../interfaces/ProductCreate';
+import {ProductList} from '../../interfaces/ProductList';
 import {catchError} from 'rxjs/operators';
 import {AuthService} from '../auth-service/auth-service';
 
@@ -22,7 +23,6 @@ export class ProductService {
   //Metodo criar produto
   public createProduct(productForm: ProductCreate): Observable<any>{
 
-
     return this.http.post(`${this.apiUrl}/create`, productForm)
       .pipe(
         catchError(error => {
@@ -30,5 +30,10 @@ export class ProductService {
           return throwError(() => new Error(errorMsg));
         })
       );
+  }
+
+  //Metodo listar todos os produtos do usuario
+  public listUserProducts(): Observable<ProductList[]>{
+    return this.http.get<ProductList[]>(`${this.apiUrl}/list/me`);
   }
 }

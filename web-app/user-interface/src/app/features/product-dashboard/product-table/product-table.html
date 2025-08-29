@@ -1,0 +1,35 @@
+<div class="container">
+  <h2>Lista de Produtos</h2>
+
+  <div *ngIf="loading">Carregando produtos...</div>
+
+  <table *ngIf="!loading && products.length > 0">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>Categoria</th>
+      <th>Preço</th>
+      <th>Quantidade</th>
+      <th>Data de criação</th>
+      <th>ID do usuário</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let product of products">
+      <td>{{ product.id }}</td>
+      <td>{{ product.name }}</td>
+      <td>{{ product.category }}</td>
+      <td>R$ {{ product.price | number: '1.2-2' }}</td>
+      <td>{{ product.quantity}}</td>
+      <td>{{ product.creationDate }}</td>
+      <td>{{ product.user }}</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && products.length === 0">
+    Nenhum produto encontrado.
+  </div>
+</div>
+
