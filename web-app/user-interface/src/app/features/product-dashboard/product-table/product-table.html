@@ -1,6 +1,20 @@
 <div class="container">
   <h2>Lista de Produtos</h2>
 
+
+  <!-- Filtros -->
+  <form (ngSubmit)="listProducts()" class="filter-form">
+    <div class="filter-group">
+      <input type="text" placeholder="Nome" [(ngModel)]="filters.name" name="name">
+      <input type="text" placeholder="Categoria" [(ngModel)]="filters.category" name="category">
+      <input type="number" placeholder="Preço min." [(ngModel)]="filters.minPrice" name="minPrice">
+      <input type="number" placeholder="Preço máx." [(ngModel)]="filters.maxPrice" name="maxPrice">
+      <input type="number" placeholder="Qtd min." [(ngModel)]="filters.minQuantity" name="minQuantity">
+      <input type="number" placeholder="Qtd máx." [(ngModel)]="filters.maxQuantity" name="maxQuantity">
+    </div>
+    <button type="submit" class="btn-filter">Pesquisar</button>
+  </form>
+
   <div *ngIf="loading">Carregando produtos...</div>
 
   <table *ngIf="!loading && products.length > 0">

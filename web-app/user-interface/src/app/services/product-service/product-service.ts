@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {ProductCreate} from '../../interfaces/ProductCreate';
 import {ProductList} from '../../interfaces/ProductList';
@@ -35,5 +35,16 @@ export class ProductService {
   //Metodo listar todos os produtos do usuario
   public listUserProducts(): Observable<ProductList[]>{
     return this.http.get<ProductList[]>(`${this.apiUrl}/list/me`);
+  }
+
+  //Metodo listar todos os produtos do usuario com filtros
+  listUserProductsFiltered(filters: any): Observable<ProductList[]> {
+    let params = new HttpParams();
+    for (const key in filters) {
+      if (filters[key] !== null && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    }
+    return this.http.get<ProductList[]>(`${this.apiUrl}/list/me/filter`, { params });
   }
 }

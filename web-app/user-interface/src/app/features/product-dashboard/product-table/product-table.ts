@@ -1,29 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ProductService} from '../../../services/product-service/product-service';
 import {ProductList} from '../../../interfaces/ProductList';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-product-table',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule
   ],
   templateUrl: './product-table.html',
   styleUrl: './product-table.css'
 })
-export class ProductTable implements OnInit{
+export class ProductTable{
 
   products:ProductList[] = [];
   loading:boolean = true;
+  filters = {
+    name: '',
+    category: '',
+    minPrice: null as number | null,
+    maxPrice: null as number | null,
+    minQuantity: null as number | null,
+    maxQuantity: null as number | null
+  }
 
   constructor(
     private productService: ProductService
   ) {}
 
-  ngOnInit():void {
+  listProducts(){
 
-    this.productService.listUserProducts().subscribe({
+    //this.loading = true;
+    this.products = []; // limpa a tabela enquanto busca
+
+    //Lista a os produtos com filtro
+    this.productService.listUserProductsFiltered(this.filters).subscribe({
       next: (data) => {
         this.products = data;
         this.loading = false;

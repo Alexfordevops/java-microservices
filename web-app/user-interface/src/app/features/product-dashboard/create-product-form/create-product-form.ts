@@ -17,7 +17,7 @@ import {NgIf} from '@angular/common';
 })
 export class CreateProductForm {
 
-  productForm: FormGroup;   // formulário reativo
+  productForm: FormGroup;          // formulário reativo
   successMessage = '';       // mensagem de sucesso
   errorMessage = '';         // mensagem de erro
 
@@ -31,7 +31,22 @@ export class CreateProductForm {
       category:['', [Validators.required, Validators.minLength(2)]],
       price: ['', [Validators.required, Validators.minLength(2)]],
       quantity:['', [Validators.required, Validators.minLength(2)]],
-    })
+    });
+    //intercepta alterações e ajusta inicial maiúscula
+    this.capitalizeFirstLetter('name');
+    this.capitalizeFirstLetter('category');
+  }
+
+  //Transforma letras iniciais em maisculas
+  private capitalizeFirstLetter(controlName: string) {
+    this.productForm.get(controlName)?.valueChanges.subscribe(value => {
+      if (value && typeof value === 'string') {
+        const formatted = value.charAt(0).toUpperCase() + value.slice(1);
+        if (formatted !== value) {
+          this.productForm.get(controlName)?.setValue(formatted, { emitEvent: false });
+        }
+      }
+    });
   }
 
   onSubmit(){
