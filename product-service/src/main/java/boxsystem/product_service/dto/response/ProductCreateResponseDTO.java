@@ -15,6 +15,7 @@ public class ProductCreateResponseDTO {
     private LocalDateTime creationDate;
     private Long userId;
 
+    public String message;
 
     public ProductCreateResponseDTO(){};
 

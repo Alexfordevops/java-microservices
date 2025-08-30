@@ -52,10 +52,11 @@ export class CreateProductForm {
   onSubmit(){
     if (this.productForm.valid) {
       this.produtcService.createProduct(this.productForm.value).subscribe({
-        next: () => {
+        next: (data) => {
           this.successMessage = 'Criação efetuada com sucesso!';
           this.errorMessage = '';
           this.productForm.reset();
+          console.log(data);
         },
         error: (err) => {
           this.errorMessage = err.message; // vem do backend

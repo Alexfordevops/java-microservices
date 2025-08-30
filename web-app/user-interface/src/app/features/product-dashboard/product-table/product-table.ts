@@ -17,7 +17,7 @@ import { FormsModule } from '@angular/forms';
 export class ProductTable{
 
   products:ProductList[] = [];
-  loading:boolean = true;
+  loading:boolean = false;
   filters = {
     name: '',
     category: '',
@@ -33,19 +33,16 @@ export class ProductTable{
 
   listProducts(){
 
-    //this.loading = true;
     this.products = []; // limpa a tabela enquanto busca
 
     //Lista a os produtos com filtro
     this.productService.listUserProductsFiltered(this.filters).subscribe({
       next: (data) => {
         this.products = data;
-        this.loading = false;
         console.log("Produtos carregados com sucesso", data);
       },
       error: (err) => {
         console.log("Erro ao carregar produtos", err);
-        this.loading = false;
       }
     })
   }
