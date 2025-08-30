@@ -75,6 +75,9 @@ public class ProductService {
         //Salva o produto
         ProductModel savedProduct = productRepo.save(product);
 
+        //Mensagem de status
+        String statusMessage = "Produto existente, quantidade incrementada";
+
         //Constroi o corpo de resposta
         ProductCreateResponseDTO response = new ProductCreateResponseDTO(
                 savedProduct.getId(),
