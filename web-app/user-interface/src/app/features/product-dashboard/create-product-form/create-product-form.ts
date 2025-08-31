@@ -33,18 +33,30 @@ export class CreateProductForm {
       quantity:['', [Validators.required, Validators.minLength(2)]],
     });
     //intercepta alterações e ajusta inicial maiúscula
-    this.capitalizeFirstLetter('name');
-    this.capitalizeFirstLetter('category');
+    this.setupAutoCapitalization();
   }
 
   //Transforma letras iniciais em maisculas
-  private capitalizeFirstLetter(controlName: string) {
-    this.productForm.get(controlName)?.valueChanges.subscribe(value => {
-      if (value && typeof value === 'string') {
-        const formatted = value.charAt(0).toUpperCase() + value.slice(1);
-        if (formatted !== value) {
-          this.productForm.get(controlName)?.setValue(formatted, { emitEvent: false });
-        }
+  private setupAutoCapitalization() {
+    Object.keys(this.productForm.controls).forEach(controlName => {
+      const control = this.productForm.get(controlName);
+      if (control) {
+        control.valueChanges.subscribe(value => {
+          if (value && typeof value === 'string') {
+            const formatted = value
+              .split(' ')
+              .map(word =>
+                word.length > 0
+                  ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                  : ''
+              )
+              .join(' ');
+
+            if (formatted !== value) {
+              control.setValue(formatted, { emitEvent: false });
+            }
+          }
+        });
       }
     });
   }
