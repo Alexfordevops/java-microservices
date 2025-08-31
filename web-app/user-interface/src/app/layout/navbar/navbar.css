@@ -1,0 +1,79 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Navbar container */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #1e293b, #0f172a);
+  padding: 1rem 2rem;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Logo */
+.logo {
+  font-size: 1.6rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #38bdf8;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+/* Links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links li {
+  display: flex;
+  align-items: center;
+}
+
+/* Botões da navbar */
+.nav-links a {
+  text-decoration: none;
+  color: #f1f5f9;
+  font-size: 1rem;
+  font-weight: 500;
+  position: relative;
+  padding: 0.3rem 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* Linha de destaque ao passar o mouse */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0%;
+  height: 2px;
+  background-color: #38bdf8;
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.nav-links a:hover {
+  color: #38bdf8;
+}

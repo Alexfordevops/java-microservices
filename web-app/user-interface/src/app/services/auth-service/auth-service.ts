@@ -55,8 +55,18 @@ export class AuthService {
     localStorage.removeItem('authToken');
   }
 
-  //Usuario logado
-  isLoggedIn():boolean{
-    return !!this.getToken(); //retorna true se houver o token
+  // Verifica se o token está expirado
+  isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) return true; //Se nao houver token retorna true
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expiry = payload.exp * 1000; // exp é em segundos
+    return Date.now() > expiry; //Se houver token que nao esteja expirado retorna false
+  }
+
+  // Verifica se usuário está logado
+  isLoggedIn(): boolean {
+    return !this.isTokenExpired(); //Se nao estiver expirado retorna true
   }
 }

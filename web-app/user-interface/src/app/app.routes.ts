@@ -6,8 +6,8 @@ import {authGuard} from './guards/auth-guard';
 
 export const routes: Routes = [
 
-  {path: "", redirectTo: "/login", pathMatch: "full"},
-  {path: "register", component: RegisterPage},
-  {path: "login", component: LoginPage},
-  {path: "products", component: ProductPage, canActivate: [authGuard]}
+  { path: "register", component: RegisterPage },
+  { path: "login", component: LoginPage },
+  { path: "products", component: ProductPage, canActivate: [authGuard] },
+  { path: '**', redirectTo: 'login' } // <- sempre a última!
 ];
