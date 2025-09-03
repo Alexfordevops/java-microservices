@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-db
+  namespace: java-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-db
+  template:
+    metadata:
+      labels:
+        app: product-db
+    spec:
+      containers:
+        - name: product-db
+          image: postgres:16
+          envFrom:
+            - configMapRef:
+                name: product-db-config
+            - secretRef:
+                name: product-db-secret
+          volumeMounts:
+            - name: product-db-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: product-db-data
+          persistentVolumeClaim:
+            claimName: product-db-pvc

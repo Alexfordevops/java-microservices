@@ -30,7 +30,7 @@ services:
       POSTGRES_USER: product_user
       POSTGRES_PASSWORD: product_pass
     ports:
-      - "5434:5432" # host:container - Corrigido para evitar conflito de porta com 'postgres'
+      - "5434:5432" # host:container 
     volumes:
       - product_postgres_data:/var/lib/postgresql/data
     networks:
@@ -163,6 +163,6 @@ services:
       - gateway
 
 volumes:
-  postgres_data:
-  user_postgres_data:
-  product_postgres_data:
+  postgres_data: # Auth-service
+  user_postgres_data: # User-service
+  product_postgres_data: # Product-service
