@@ -4,14 +4,18 @@ import {UserLogin} from '../../interfaces/UserLogin';
 import {HttpClient} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  //Endpoint da api auth-service
-  private apiUrl: string = 'http://192.168.56.10:8080/auth';
+  //Endpoint da api auth-service(para testes com docker-compose)
+  //private apiUrl: string = 'http://192.168.56.10:8080/auth';
+
+  //Endpoint da api gateway(para testes com k8s-minikube)
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   //Constroi as classes
   constructor(
