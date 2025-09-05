@@ -1,30 +1,31 @@
-# Etapa 1: build da aplicação Angular
+# Etapa 1: build Angular
 FROM node:20-alpine AS build
-
 WORKDIR /app
 
 # Copiar package.json e instalar dependências
 COPY package*.json ./
 RUN npm install -g @angular/cli && npm install
 
-# Copiar código fonte
+# Copiar código fonte e gerar build
 COPY . .
-
-# Gerar build de produção
 RUN ng build --configuration production
 
-# Etapa 2: usar Nginx para servir
+# Etapa 2: Nginx
 FROM nginx:1.27-alpine
 
-# Remover config default
+# Limpar conteúdo padrão do Nginx
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copiar arquivos buildados para a pasta pública do nginx
+# Copiar build Angular
 COPY --from=build /app/dist/user-interface/browser /usr/share/nginx/html
 
-# Configuração customizada para SPA (rotas Angular funcionarem direto no browser)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copiar conf Nginx global
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Testar sintaxe antes de rodar
+RUN nginx -t
 
 EXPOSE 80
 
+# Comando padrão
 CMD ["nginx", "-g", "daemon off;"]

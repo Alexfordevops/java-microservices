@@ -10,8 +10,11 @@ import { catchError, tap } from 'rxjs/operators';
 })
 export class AuthService {
 
-  //Endpoint da api auth-service
-  private apiUrl: string = 'http://192.168.56.10:8080/auth';
+  //Endpoint da api auth-service roteado pelo gateway (docker-compose)
+  //private apiUrl: string = 'http://192.168.56.10:8080/auth';
+
+  //Endpoint da api auth-service acesso via ingress depois roteado pelo gateway (minikube)
+  private apiUrl: string = 'http://192.168.56.12:30080/auth'
 
   //Constroi as classes
   constructor(

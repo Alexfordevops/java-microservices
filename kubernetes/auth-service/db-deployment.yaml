@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-db
+  namespace: java-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-db
+  template:
+    metadata:
+      labels:
+        app: auth-db
+    spec:
+      containers:
+        - name: auth-db
+          image: postgres:16
+          envFrom:
+            - configMapRef:
+                name: auth-db-config
+            - secretRef:
+                name: auth-db-secret
+          volumeMounts:
+            - name: auth-db-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: auth-db-data
+          persistentVolumeClaim:
+            claimName: auth-db-pvc
