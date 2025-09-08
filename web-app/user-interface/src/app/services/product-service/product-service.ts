@@ -11,8 +11,11 @@ import {AuthService} from '../auth-service/auth-service';
 })
 export class ProductService {
 
-  //Endpoint da api product-service
-  private apiUrl: string = 'http://192.168.56.10:8080/products';
+  //Endpoint da api product-service roteado pelo gateway (docker-compose)
+  //private apiUrl: string = 'http://192.168.56.10:8080/products';
+
+  //Endpoint da api product-service acesso via ingress depois roteado pelo gateway (minikube)
+  private apiUrl: string = 'http://192.168.56.12:30080/products'
 
   //Constroi as classes
   constructor(
