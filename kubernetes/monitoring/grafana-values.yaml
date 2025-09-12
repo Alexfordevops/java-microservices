@@ -1,0 +1,16 @@
+grafana:
+  adminUser: admin
+  adminPassword: admin
+
+  persistence:
+    enabled: true
+    type: pvc
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+    storageClassName: ""
+
+  grafana.ini:
+    server:
+      root_url: "%(protocol)s://%(domain)s:/grafana/"
+      serve_from_sub_path: true

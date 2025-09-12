@@ -1,16 +1,29 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: micro-ingress-endpoints
+  name: micro-ingress-endpoints-dns
   namespace: java-microservices
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-body-size: 10m
 spec:
   rules:
-    - http:
+    # Angular App (SPA)
+    - host: app.local
+      http:
         paths:
-          # APIs - sem rewrite
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: angular-app-service
+                port:
+                  number: 80
+
+    # API Gateway
+    - host: api.local
+      http:
+        paths:
           - path: /auth
             pathType: Prefix
             backend:
@@ -33,17 +46,11 @@ spec:
                 port:
                   number: 8080
 
-          # Assets da Angular App
-          - path: /assets/
-            pathType: Prefix
-            backend:
-              service:
-                name: angular-app-service
-                port:
-                  number: 80
-
-          # RabbitMQ
-          - path: /rabbitmq
+    # RabbitMQ
+    - host: rabbitmq.local
+      http:
+        paths:
+          - path: /
             pathType: Prefix
             backend:
               service:
@@ -51,20 +58,14 @@ spec:
                 port:
                   number: 15672
 
-          # Grafana
-          - path: /grafana
-            pathType: Prefix
-            backend:
-              service:
-                name: monitoring-grafana
-                port:
-                  number: 80
-
-          # SPA fallback
+    # Grafana
+    - host: grafana.local
+      http:
+        paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: angular-app-service
+                name: monitoring-grafana
                 port:
                   number: 80
