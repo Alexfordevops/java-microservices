@@ -9,7 +9,7 @@ echo "Waiting for Minikube to be ready..."
 
 # Set the current context to the 'nosql' namespace
 echo "Setting current context to 'nosql' namespace..."
-kubectl config set-context --current --namespace=nosql
+kubectl config set-context --current --namespace=java-microservices
 
 # User kubernetes docker
 echo "Setting kubernetes docker"
