@@ -10,7 +10,7 @@ spec:
   rules:
     - http:
         paths:
-          # 1️⃣ Microserviços / APIs - sem rewrite
+          # API
           - path: /auth
             pathType: Prefix
             backend:
@@ -33,7 +33,7 @@ spec:
                 port:
                   number: 8080
 
-          # 2️⃣ Assets da Angular App
+          # Assets da Angular App
           - path: /assets/
             pathType: Prefix
             backend:
@@ -42,11 +42,20 @@ spec:
                 port:
                   number: 80
 
-          # 3️⃣ SPA fallback (qualquer rota que não seja API ou assets)
-          - path: /
+          # Angular app
+          - path: /web
             pathType: Prefix
             backend:
               service:
                 name: angular-app-service
                 port:
                   number: 80
+          
+          # RabbitMQ management
+          - path: /rabbitmq
+            pathType: Prefix
+            backend:
+              service:
+                name: rabbitmq
+                port:
+                  number: 15672
