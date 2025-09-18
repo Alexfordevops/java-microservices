@@ -7,8 +7,8 @@ minikube start --memory=7800mb
 # Wait for Minikube to be fully ready
 echo "Waiting for Minikube to be ready..."
 
-# Set the current context to the 'nosql' namespace
-echo "Setting current context to 'nosql' namespace..."
+# Set the current context to the 'java-microservices' namespace
+echo "Setting current context to 'java-microservices' namespace..."
 kubectl config set-context --current --namespace=java-microservices
 
 # User kubernetes docker
